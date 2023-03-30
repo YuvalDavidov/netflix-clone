@@ -1,10 +1,11 @@
 import axios from 'axios'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Movie from './Movie'
 import {MdChevronLeft, MdChevronRight} from 'react-icons/md'
 
-const Row = ({title,fetchURL,rowId}) => {
+const Row = ({title,fetchURL}) => {
     const [movies,setMovies] = useState([])
+    const sliderRef = useRef()
 
     useEffect(()=>{
         axios.get(fetchURL).then((response)=>{
@@ -13,7 +14,7 @@ const Row = ({title,fetchURL,rowId}) => {
     },[fetchURL])
 
     function slide(direction){
-        const slider = document.getElementById('slider'+rowId)
+        const slider = sliderRef.current
         if(direction === 'left') slider.scrollLeft -= 500
         else slider.scrollLeft += 500      
     }
@@ -26,7 +27,7 @@ const Row = ({title,fetchURL,rowId}) => {
             onClick={()=>{slide('left')}} 
             size={40} 
             className="bg-white absolute left-0 rounded-full opacity-50 hover:opacity-100 cursor-pointer z-10 hidden group-hover:block"/>
-            <div id={'slider' + rowId} className="w-full h-full overflow-x-scroll relative whitespace-nowrap scroll-smooth scrollbar-hide">
+            <div ref={sliderRef} className="w-full h-full overflow-x-scroll relative whitespace-nowrap scroll-smooth scrollbar-hide">
                 {movies?.map((item,id)=>{
                     return <Movie key={id} item={item} />
                 })}
